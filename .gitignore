@@ -1,0 +1,9 @@
+*.jar
+
+.idea
+
+out
+src/main/resources
+
+.gradle
+!gradle-wrapper.jar
