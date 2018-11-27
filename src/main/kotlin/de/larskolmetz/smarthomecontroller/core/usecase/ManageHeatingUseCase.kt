@@ -1,4 +1,4 @@
-package de.larskolmetz.smarthomecontroller.web.usecase
+package de.larskolmetz.smarthomecontroller.core.usecase
 
 import de.larskolmetz.smarthomecontroller.core.domain.HeatingData
 import de.larskolmetz.smarthomecontroller.core.`in`.HeatingService
