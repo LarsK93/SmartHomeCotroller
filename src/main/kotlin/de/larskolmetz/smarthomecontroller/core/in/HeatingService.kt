@@ -4,6 +4,6 @@ import de.larskolmetz.smarthomecontroller.core.domain.HeatingData
 
 interface HeatingService {
 
-    fun getTargetTemperature(): HeatingData
+    fun getTargetTemperatureAndValve(): HeatingData
 
 }

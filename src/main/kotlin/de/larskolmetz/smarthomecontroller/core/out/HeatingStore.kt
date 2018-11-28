@@ -2,6 +2,6 @@ package de.larskolmetz.smarthomecontroller.core.out
 
 interface HeatingStore {
 
-    fun fetchTargetTemperature(): Double?
+    fun fetchTargetTemperatureAndValve(): Pair<Double?, Double?>?
 
 }
