@@ -25,6 +25,7 @@ hs_err_pid*
 /.idea/
 
 src/main/resources/*.properties
+src/main/resources/META-INF/
 
 .gradle
 /build/
