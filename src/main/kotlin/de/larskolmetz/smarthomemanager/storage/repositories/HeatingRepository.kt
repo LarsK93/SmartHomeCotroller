@@ -63,9 +63,3 @@ class HeatingRepository : HeatingStore {
     }
 
 }
-
-fun main(args: Array<String>) {
-    val heatingRepo = HeatingRepository()
-    val x = heatingRepo.parseExpResult("Testsredsaf", "Temperature:", "°C")
-    print(x)
-}
