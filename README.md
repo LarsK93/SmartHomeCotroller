@@ -1,1 +1,1 @@
-# SmartHomeCotroller
+# SmartHomeManager
