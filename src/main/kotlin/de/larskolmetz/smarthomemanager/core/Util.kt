@@ -1,4 +1,4 @@
-package de.larskolmetz.smarthomecontroller.core
+package de.larskolmetz.smarthomemanager.core
 
 import java.io.File
 import java.io.IOException

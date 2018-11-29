@@ -1,7 +1,7 @@
-package de.larskolmetz.smarthomecontroller.web.controller
+package de.larskolmetz.smarthomemanager.web.controller
 
-import de.larskolmetz.smarthomecontroller.core.domain.HeatingData
-import de.larskolmetz.smarthomecontroller.core.`in`.HeatingService
+import de.larskolmetz.smarthomemanager.core.domain.HeatingData
+import de.larskolmetz.smarthomemanager.core.`in`.HeatingService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

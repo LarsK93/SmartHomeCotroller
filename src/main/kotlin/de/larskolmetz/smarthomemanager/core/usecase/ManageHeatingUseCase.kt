@@ -1,8 +1,8 @@
-package de.larskolmetz.smarthomecontroller.core.usecase
+package de.larskolmetz.smarthomemanager.core.usecase
 
-import de.larskolmetz.smarthomecontroller.core.domain.HeatingData
-import de.larskolmetz.smarthomecontroller.core.`in`.HeatingService
-import de.larskolmetz.smarthomecontroller.core.out.HeatingStore
+import de.larskolmetz.smarthomemanager.core.domain.HeatingData
+import de.larskolmetz.smarthomemanager.core.`in`.HeatingService
+import de.larskolmetz.smarthomemanager.core.out.HeatingStore
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 

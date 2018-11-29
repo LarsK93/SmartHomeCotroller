@@ -1,4 +1,4 @@
-package de.larskolmetz.smarthomecontroller.core.out
+package de.larskolmetz.smarthomemanager.core.out
 
 interface HeatingStore {
 

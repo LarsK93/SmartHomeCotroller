@@ -1,7 +1,7 @@
-package de.larskolmetz.smarthomecontroller.storage.repositories
+package de.larskolmetz.smarthomemanager.storage.repositories
 
-import de.larskolmetz.smarthomecontroller.core.Util
-import de.larskolmetz.smarthomecontroller.core.out.HeatingStore
+import de.larskolmetz.smarthomemanager.core.Util
+import de.larskolmetz.smarthomemanager.core.out.HeatingStore
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
