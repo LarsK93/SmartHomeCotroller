@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class HeatingController(val heatingService: HeatingService) {
+class HeatingController(private val heatingService: HeatingService) {
 
     @GetMapping("/heating/targettemperaturevalve")
     @ResponseBody

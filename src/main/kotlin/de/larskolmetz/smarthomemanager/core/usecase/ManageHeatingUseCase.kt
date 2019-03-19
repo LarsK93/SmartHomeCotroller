@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class ManageHeatingUseCase(val heatingStore: HeatingStore) : HeatingService {
+class ManageHeatingUseCase(private val heatingStore: HeatingStore) : HeatingService {
 
     private val log = LoggerFactory.getLogger(this.javaClass)
 

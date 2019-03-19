@@ -33,7 +33,7 @@ class HeatingRepository : HeatingStore {
         }
     }
 
-    fun parseExpResult(cmdOutput: String?, searchStringStart: String, searchStringEnd: String): Double? {
+    private fun parseExpResult(cmdOutput: String?, searchStringStart: String, searchStringEnd: String): Double? {
         return try {
             val startIndex = cmdOutput!!.indexOf(searchStringStart) + searchStringStart.length
             val endIndex = cmdOutput.indexOf(searchStringEnd)
