@@ -19,7 +19,7 @@ class HeatingRepository : HeatingStore {
     override fun fetchTargetTemperatureAndValve(): Pair<Double, Double>? {
         return try {
             val heatingMacAddr = heatingMacAddr!!
-            val status = Util.runCommand("./eq3.exp $heatingMacAddr status", File("src/main/resources"))
+            val status = Util.runCommand("./eq3.exp $heatingMacAddr status")
             log.debug(status)
             val targetTemperature = parseExpResult(status, "Temperature:", "°C")
             val valve = parseExpResult(status, "Valve:", "%")
