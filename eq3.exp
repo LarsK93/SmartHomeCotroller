@@ -71,7 +71,8 @@ set HELP(boost) "\
 set HELP(boost_off) "\
   boost off                                      - Deactivates boost mode"
 set HELP(timer) "\
-  timers                                         - Reads all timers\n\
+  timers                                         - Reads all timers and prints them human friendly\n\
+  timer-settings                                 - Reads all timers and prints them ready for re-configuration\n\
   timer <day>                                    - Reads timer for given day\n\
   timer <day> <base> <hh:mm> <temp> <hh:mm> ...  - Sets timer for given day and up to 7 events with temperature and time\n\
 \                                                 day:  mon, tue, wed, thu, fri, sat, sun, work, weekend, everyday, today, tomorrow\n\
@@ -161,6 +162,7 @@ set thermostat(name)           ""
 set thermostat(vendor)         ""
 set thermostat(last_request)   ""
 set thermostat(serial)         ""
+set thermostat(firmware)       ""
 set thermostat(pin)            ""
 set thermostat(status)         ""
 set thermostat(mode)           ""
@@ -683,10 +685,44 @@ proc printTimer {day} {
   }
   for {set event 1} {$event <= 7} {incr event} {
     set key "[lindex $day 0]_[lindex $event 0]"
-    append out "\t[lindex $DAYS $day], $thermostat("timer_start_$key") - $thermostat("timer_end_$key"):\t$thermostat("timer_temperature_$key")°C\n"
-   if {"24:00" == "$thermostat("timer_end_$key")"} {
+    append out "\t$thermostat("timer_start_$key") - $thermostat("timer_end_$key"):\t$thermostat("timer_temperature_$key")°C\n"
+    if {"24:00" == "$thermostat("timer_end_$key")"} {
       break
     }
+  }
+  return $out
+}
+
+proc dumpTimer {day} {
+  global DAYS
+  global thermostat
+
+  set out "timer "
+  append out [string tolower [lindex $DAYS $day]]
+  append out " "
+  for {set event 1} {$event <= 7} {incr event} {
+    set key "[lindex $day 0]_[lindex $event 0]"
+    if {"00:00" == "$thermostat("timer_start_$key")"} {
+      append out "$thermostat("timer_temperature_$key") "
+      continue
+    }
+
+    append out "$thermostat("timer_start_$key") $thermostat("timer_temperature_$key") "
+
+    if {"24:00" == "$thermostat("timer_end_$key")"} {
+      append out "$thermostat("timer_end_$key")"
+      break
+    }
+  }
+
+  append out "\n"
+  return $out
+}
+
+proc dumpTimers {} {
+  set out ""
+  for {set day 0} {$day < 7} {incr day} {
+    append out [dumpTimer $day]
   }
   return $out
 }
@@ -721,18 +757,18 @@ proc syncTime {} {
 
   if {$raw_status == ""} {
     puts "ERROR: Thermostat hasn't responded after sync request in time ($timeout sec.)"
-    exit -1
+    exit -1  
   }
 
   parseMode $raw_status
   puts "\n[printStatus]"
-
+   
 }
 
 proc setVacationMode {date daytime temp} {
   global REQUESTS
   global timeout
-
+  
   set part [split $date "-"]
   scan [lindex $part 0] %d year
   scan [lindex $part 1] %d month
@@ -745,7 +781,7 @@ proc setVacationMode {date daytime temp} {
 
   if {$raw_status == ""} {
     puts "ERROR: Thermostat hasn't responded after vacation mode request in time ($timeout sec.)"
-    exit -1
+    exit -1  
   }
 
   puts "\nVacation mode:\t\t\t$date $daytime $temp°C"
@@ -806,7 +842,7 @@ proc setComfortEco {comfort eco} {
 
   if {$raw_status == ""} {
     puts "ERROR: Thermostat hasn't responded to after comfort/eco request in time ($timeout sec.)"
-    exit -1
+    exit -1  
   }
 
   puts "\nComfort temperature:\t\t$comfort°C"
@@ -842,7 +878,7 @@ proc setOffset {temp} {
 
   if {$raw_status == ""} {
     puts "ERROR: Thermostat hasn't responded after offset request in time ($timeout sec.)"
-    exit -1
+    exit -1  
   }
 
   puts "\nOffset temperature:\t\t$temp°C"
@@ -869,12 +905,12 @@ proc setMode {mode} {
       set raw_status [writeRequest $REQUESTS(stopBoost) ""]
     }
   }
-
+  
   if {$raw_status == ""} {
     puts "ERROR: Thermostat hasn't responded after mode request in time ($timeout sec.)"
-    exit -1
+    exit -1  
   }
-
+  
   parseMode $raw_status
   puts "\n[printStatus]"
 }
@@ -898,7 +934,7 @@ proc setTemperature {temp} {
 
   if {$raw_status == ""} {
     puts "ERROR: Thermostat hasn't responded after temperature request in time ($timeout sec.)"
-    exit -1
+    exit -1  
   }
 
   parseMode $raw_status
@@ -935,6 +971,9 @@ proc parseSerial {} {
     exit -1
   }
 
+  set firmware [expr ([hexToDecimal [lindex $raw_serial 1]] / 100.0)]
+  set thermostat(firmware) $firmware
+
   set serial ""
   for {set i 4} {$i < 14} {incr i} {
     set v [hexToDecimal [lindex $raw_serial $i]]
@@ -942,12 +981,12 @@ proc parseSerial {} {
   }
   set thermostat(serial) $serial
 
-#  set pin ""
-#  append pin [expr ( [ascii $serial 3]       ^  [ascii $serial 7])       % 10]
-#  append pin [expr ( [ascii $serial 4]       ^  [ascii $serial 8])       % 10]
-#  append pin [expr ( [ascii $serial 5]       ^  [ascii $serial 9])       % 10]
-#  append pin [expr (([ascii $serial 6] - 48) ^ ([ascii $serial 0] - 65)) % 10]
-#  set thermostat(pin) $pin
+  set pin ""
+  append pin [expr ( [ascii $serial 3]       ^  [ascii $serial 7])       % 10]
+  append pin [expr ( [ascii $serial 4]       ^  [ascii $serial 8])       % 10]
+  append pin [expr ( [ascii $serial 5]       ^  [ascii $serial 9])       % 10]
+  append pin [expr (([ascii $serial 6] - 48) ^ ([ascii $serial 0] - 65)) % 10]
+  set thermostat(pin) $pin  
 
 }
 
@@ -956,6 +995,7 @@ proc printSerial {} {
 
   parseSerial
   puts "\nSerial no.:\t\t$thermostat(serial)"
+  puts "Firmware:\t\t$thermostat(firmware)"
   puts "Pair:\t\t\t$thermostat(pin)"
   puts ""
 }
@@ -965,12 +1005,12 @@ proc otherRequest {command} {
   global timeout
 
   set raw_status [writeRequest $REQUESTS($command) ""]
-
+  
   if {$raw_status == ""} {
     puts "ERROR: Thermostat hasn't responded in time ($timeout sec.)"
-    exit -1
+    exit -1  
   }
-
+  
   parseMode $raw_status
   puts "\n[printStatus]"
 }
@@ -1029,6 +1069,10 @@ proc doCommand {} {
         init 0
         setAwayMode [lindex $c 1] [lindex $c 2]
       }
+    }
+    ^timer-settings$ {
+      init $INIT(timer)
+      puts [dumpTimers]
     }
     ^timers$ {
       init $INIT(timer)
