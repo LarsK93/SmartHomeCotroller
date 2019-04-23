@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.File
+import java.io.IOException
 import java.lang.NumberFormatException
 
 @Component
@@ -19,7 +20,16 @@ class HeatingRepository : HeatingStore {
     override fun fetchTargetTemperatureAndValve(): Pair<Double, Double>? {
         return try {
             val heatingMacAddr = heatingMacAddr!!
-            val status = Util.runCommand("./eq3.exp $heatingMacAddr status")
+            val status = try {
+                Util.runCommand("./eq3.exp $heatingMacAddr status")
+            } catch (e: IOException) {
+                if (e.message != null && e.message!!.endsWith("No such file or directory")) {
+                    Util.installEq3()
+                    Util.runCommand("./eq3.exp $heatingMacAddr status")
+                } else {
+                    return null
+                }
+            }
             log.debug(status)
             val targetTemperature = parseExpResult(status, "Temperature:", "°C")
             val valve = parseExpResult(status, "Valve:", "%")
