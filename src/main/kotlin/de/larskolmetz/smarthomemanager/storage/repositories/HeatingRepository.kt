@@ -23,12 +23,8 @@ class HeatingRepository : HeatingStore {
             val status = try {
                 Util.runCommand("./eq3.exp $heatingMacAddr status")
             } catch (e: IOException) {
-                if (e.message != null && e.message!!.endsWith("No such file or directory")) {
-                    Util.installEq3()
-                    Util.runCommand("./eq3.exp $heatingMacAddr status")
-                } else {
-                    return null
-                }
+                Util.installEq3()
+                Util.runCommand("./eq3.exp $heatingMacAddr status")
             }
             log.debug(status)
             val targetTemperature = parseExpResult(status, "Temperature:", "°C")
