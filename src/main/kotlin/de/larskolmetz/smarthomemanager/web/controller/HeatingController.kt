@@ -16,7 +16,7 @@ class HeatingController(private val heatingService: HeatingService) {
     fun getTargetTemperature(): ResponseEntity<HeatingData> {
         val data = heatingService.getTargetTemperatureAndValve()
         return if (data.targetTemperature != null || data.valve != null) {
-            ResponseEntity(data, HttpStatus.ACCEPTED)
+            ResponseEntity(data, HttpStatus.OK)
         } else {
             ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
         }
