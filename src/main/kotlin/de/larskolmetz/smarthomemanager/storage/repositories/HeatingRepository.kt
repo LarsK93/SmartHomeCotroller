@@ -17,8 +17,8 @@ class HeatingRepository : HeatingStore {
     @Value("\${heating.mac_addr}")
     val heatingMacAddr: String? = null
 
-    override fun fetchTargetTemperatureAndValve(): Pair<Double, Double>? {
-        return try {
+    override fun fetchTargetTemperatureAndValve(tryCount: Int): Pair<Double?, Double?>? {
+        try {
             val heatingMacAddr = heatingMacAddr!!
             val status = try {
                 Util.runCommand("./eq3.exp $heatingMacAddr status")
@@ -29,13 +29,19 @@ class HeatingRepository : HeatingStore {
             log.debug(status)
             val targetTemperature = parseExpResult(status, "Temperature:", "°C")
             val valve = parseExpResult(status, "Valve:", "%")
-
-            Pair(targetTemperature!!, valve!!)
+            if (targetTemperature == null || valve == null) {
+                return if (tryCount < 3) {
+                    fetchTargetTemperatureAndValve(tryCount + 1)
+                } else {
+                    null
+                }
+            }
+            return Pair(targetTemperature, valve)
         } catch (e: KotlinNullPointerException) {
             log.error("MAC-Address of heating is not defined or command returned invalid result. MAC: $heatingMacAddr")
             e.printStackTrace()
 
-            null
+            return null
         }
     }
 
